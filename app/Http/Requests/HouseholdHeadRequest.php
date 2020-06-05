@@ -89,6 +89,7 @@ class HouseholdHeadRequest extends FormRequest
             'barangay.required' => 'Please select Barangay',
             'petsa_ng_pagrehistro.after_or_equal' => "Petsa ng Pagrerehistro' field month should be April, May or June 2020 only",
             'petsa_ng_pagrehistro.before_or_equal' => "Petsa ng Pagrerehistro' field month should be April, May or June 2020 only",
+            'sac_number.unique' => "The :attribute field is already in the list.",
         ];
 
         if(request()->has('members')){
