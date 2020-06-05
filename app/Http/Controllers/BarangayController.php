@@ -17,6 +17,34 @@ class BarangayController extends Controller
         //
     }
 
+    public function listProvinces()
+    {
+        $query = Barangay::select('province_name','province_psgc');
+        $query->distinct();
+        return [
+            'provinces' => $query->get(),
+        ];
+    }
+    public function listCities($province_psgc)
+    {
+        $query = Barangay::select('city_name','city_psgc');
+        $query->distinct();
+        $query->where('province_psgc', $province_psgc);
+        return [
+            'cities' => $query->get(),
+        ];
+    }
+    public function listBarangays($province_psgc, $city_psgc)
+    {
+        $query = Barangay::select('barangay_name','barangay_psgc');
+        $query->distinct();
+        $query->where('province_psgc', $province_psgc);
+        $query->where('city_psgc', $city_psgc);
+        return [
+            'barangays' => $query->get(),
+        ];
+    }
+
     /**
      * Show the form for creating a new resource.
      *

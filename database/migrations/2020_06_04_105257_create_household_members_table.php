@@ -15,18 +15,18 @@ class CreateHouseholdMembersTable extends Migration
     {
         Schema::create('household_members', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('household_head_id')->nullale();
-            $table->string('first_name')->nullale();
-            $table->string('middle_name')->nullale();
-            $table->string('last_name')->nullale();
-            $table->string('ext_name')->nullale();
-            $table->string('relasyon_sa_punong_pamilya')->nullale();
-            $table->string('kasarian')->nullale();
-            $table->date('kapanganakan')->nullale();
-            $table->string('trabaho')->nullale();
-            $table->string('pinagtratrabahuhang_lugar')->nullale();
-            $table->string('sektor')->nullale();
-            $table->string('kondisyon_ng_kalusugan')->nullale();
+            $table->unsignedBigInteger('household_head_id')->nullable();
+            $table->string('first_name')->nullable();
+            $table->string('middle_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->string('ext_name')->nullable();
+            $table->string('relasyon_sa_punong_pamilya')->nullable();
+            $table->string('kasarian')->nullable();
+            $table->date('kapanganakan')->nullable();
+            $table->string('trabaho')->nullable();
+            $table->string('pinagtratrabahuhang_lugar')->nullable();
+            $table->string('sektor')->nullable();
+            $table->string('kondisyon_ng_kalusugan')->nullable();
             $table->timestamps();
             $table->foreign('household_head_id')->references('id')->on('household_heads')->onDelete('cascade');
         });

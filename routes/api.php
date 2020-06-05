@@ -17,3 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::post('household-heads', 'HouseholdHeadController@store')->name('api.household-head.store');
+Route::get('provinces', 'BarangayController@listProvinces')->name('api.household-head.store');
+Route::get('provinces/{city_psgc}/cities', 'BarangayController@listCities')->name('api.household-head.store');
+Route::get('provinces/{city_psgc}/cities/{barangay_psgc}/barangays', 'BarangayController@listBarangays')->name('api.household-head.store');
