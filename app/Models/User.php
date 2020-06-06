@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -28,6 +28,14 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function findForPassport($username){
+        return $this->where('username', $username)->first();
+    }
+
+    public function AauthAcessToken(){
+        return $this->hasMany('\App\Models\OauthAccessToken');
+    }
 
     /**
      * The attributes that should be cast to native types.

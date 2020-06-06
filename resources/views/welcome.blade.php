@@ -84,6 +84,16 @@
                     Laravel
                 </div>
 
+                <form action="/oauth/token" method="post">
+                <!-- @csrf
+                    <input type="text" name="grant_type" value="password">
+                    <input type="text" name="client_id" value="2">
+                    <input type="text" name="client_secret" value="Fsp02uPlfKEArP6WSEFMNFpd00yZSvLREWSarukW">
+                    <input type="text" name="username">
+                    <input type="text" name="password">
+                    <input type="submit" value="submit">
+                </form> -->
+
                 <div class="links">
                     <a href="https://laravel.com/docs">Docs</a>
                     <a href="https://laracasts.com">Laracasts</a>
