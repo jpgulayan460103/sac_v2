@@ -24,6 +24,11 @@ class AuthController extends Controller
             ],422);
         }
         $user = User::whereUsername($request->username)->first();
+        if($user->confirmed != 1){
+            return response([
+                'message' => 'Your account is not active.'
+            ],422);
+        }
 
         $createdToken = $this->getToken($request);
         return response([
