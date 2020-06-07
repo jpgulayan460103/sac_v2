@@ -60,7 +60,8 @@ class HouseholdHeadRequest extends FormRequest
             'petsa_ng_pagrehistro' => ['required', new ValidBirthdate, 'after_or_equal:2020-04-01', 'before_or_equal:2020-06-30'],
             'pangalan_ng_punong_barangay' => ['required', new DisallowDash, new AllowedStringName,'max:200'],
             'pangalan_ng_lswdo' => ['required', new DisallowDash, new AllowedStringName,'max:200'],
-            'sac_number' => ['required','numeric','unique:household_heads,sac_number,'.$id.',id'],
+            'barcode_number' => ['required','unique:household_heads,barcode_number,'.$id.',id'],
+            'sac_number' => ['required','numeric'],
         ];
 
         if(request()->has('members')){
@@ -89,7 +90,7 @@ class HouseholdHeadRequest extends FormRequest
             'barangay.required' => 'Please select Barangay',
             'petsa_ng_pagrehistro.after_or_equal' => "Petsa ng Pagrerehistro' field month should be April, May or June 2020 only",
             'petsa_ng_pagrehistro.before_or_equal' => "Petsa ng Pagrerehistro' field month should be April, May or June 2020 only",
-            'sac_number.unique' => "The :attribute field is already in the list.",
+            'barcode_number.unique' => "The :attribute is already added.",
         ];
 
         if(request()->has('members')){

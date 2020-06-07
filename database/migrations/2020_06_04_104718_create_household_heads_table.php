@@ -41,10 +41,11 @@ class CreateHouseholdHeadsTable extends Migration
             $table->string('pangalan_ng_punong_barangay')->nullable();
             $table->string('pangalan_ng_lswdo')->nullable();
             $table->text('remarks')->nullable();
-            $table->integer('sac_number');
+            $table->string('sac_number');
+            $table->string('barcode_number');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
-            $table->unique('sac_number');
+            $table->unique('barcode_number');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             
         });

@@ -7,6 +7,11 @@ use Carbon\Carbon;
 
 class HouseholdMember extends Model
 {
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'kapanganakan',
+    ];
     protected $fillable = [
         'household_head_id',
         'first_name',

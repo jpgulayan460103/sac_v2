@@ -7,6 +7,8 @@ use App\Models\HouseholdMember;
 use Illuminate\Http\Request;
 use App\Http\Requests\HouseholdHeadRequest;
 use DB;
+use App\Transformers\HouseholdHeadTransformer;
+
 
 class HouseholdHeadController extends Controller
 {
@@ -19,7 +21,7 @@ class HouseholdHeadController extends Controller
     {
         $household_heads = HouseholdHead::with('members','barangay')->paginate(10);
         return [
-            'household_heads' => $household_heads
+            'household_heads' => fractal($household_heads, new HouseholdHeadTransformer)->parseIncludes('barangay,members')->toArray()
         ];
     }
 
@@ -91,16 +93,19 @@ class HouseholdHeadController extends Controller
      */
     public function update(HouseholdHeadRequest $request, HouseholdHead $householdHead, $id)
     {
-
-        // return $request->members;
-        $hhead = $householdHead->find($id);
-        if ($request->members && $request->members != array()) {
-            foreach ($request->members as $member) {
-                $hmember = HouseholdMember::find($member['id']);
-                $hmember->update($member);
+        DB::beginTransaction();
+        try{
+            $hhead = $householdHead->find($id);
+            if ($request->members && $request->members != array()) {
+                foreach ($request->members as $member) {
+                    $hmember = HouseholdMember::find($member['id']);
+                    $hmember->update($member);
+                }
             }
-        }
-        $hhead->update($request->all());
+            $hhead->update($request->all());
+                DB::commit();
+            }
+        catch(\Exception $e){DB::rollback();throw $e;}
         return $householdHead->find($id);
     }
 

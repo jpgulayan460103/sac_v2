@@ -7,6 +7,12 @@ use Carbon\Carbon;
 
 class HouseholdHead extends Model
 {
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'kapanganakan',
+        'petsa_ng_pagrehistro',
+    ];
     protected $fillable = [
         'barangay_id',
         'first_name',
@@ -34,6 +40,7 @@ class HouseholdHead extends Model
         'petsa_ng_pagrehistro',
         'pangalan_ng_punong_barangay',
         'pangalan_ng_lswdo',
+        'barcode_number',
         'sac_number',
         'remarks',
     ];
