@@ -15,8 +15,6 @@ class CreateHouseholdHeadsTable extends Migration
     {
         Schema::create('household_heads', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->string('barangay')->nullable();
             $table->string('first_name')->nullable();
             $table->string('middle_name')->nullable();
             $table->string('last_name')->nullable();
@@ -42,10 +40,11 @@ class CreateHouseholdHeadsTable extends Migration
             $table->date('petsa_ng_pagrehistro')->nullable();
             $table->string('pangalan_ng_punong_barangay')->nullable();
             $table->string('pangalan_ng_lswdo')->nullable();
+            $table->text('remarks')->nullable();
             $table->integer('sac_number');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
             $table->unique('sac_number');
-            $table->index(['barangay']);
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             
         });

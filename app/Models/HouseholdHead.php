@@ -8,7 +8,7 @@ use Carbon\Carbon;
 class HouseholdHead extends Model
 {
     protected $fillable = [
-        'barangay',
+        'barangay_id',
         'first_name',
         'middle_name',
         'last_name',
@@ -35,11 +35,17 @@ class HouseholdHead extends Model
         'pangalan_ng_punong_barangay',
         'pangalan_ng_lswdo',
         'sac_number',
+        'remarks',
     ];
 
     public function members()
     {
         return $this->hasMany('App\Models\HouseholdMember');
+    }
+
+    public function barangay()
+    {
+        return $this->belongsTo('App\Models\Barangay');
     }
 
     public function setKapanganakanAttribute($value)

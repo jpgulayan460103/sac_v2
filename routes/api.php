@@ -17,10 +17,20 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+if(config('app.env') == "production"){
+    $route_params = ['middleware' => 'auth:api'];
+}else{
+    $route_params = ['middleware' => 'auth:api'];
+    $route_params = [];
+}
+Route::group($route_params, function () {
+    Route::get('household-heads', 'HouseholdHeadController@index')->name('api.household-head.index');
+    Route::post('household-heads', 'HouseholdHeadController@store')->name('api.household-head.store');
+    Route::put('household-heads/{id}', 'HouseholdHeadController@update')->name('api.household-head.update');
+    Route::get('provinces', 'BarangayController@listProvinces')->name('api.household-head.store');
+    Route::get('provinces/{city_psgc}/cities', 'BarangayController@listCities')->name('api.household-head.store');
+    Route::get('provinces/{city_psgc}/cities/{barangay_psgc}/barangays', 'BarangayController@listBarangays')->name('api.household-head.store');
+    Route::post('logout', 'AuthController@logout')->name('api.auth.logout');
+});
 Route::post('login', 'AuthController@login')->name('api.auth.login');
-Route::middleware('auth:api')->post('household-heads', 'HouseholdHeadController@store')->name('api.household-head.store');
-Route::middleware('auth:api')->get('provinces', 'BarangayController@listProvinces')->name('api.household-head.store');
-Route::middleware('auth:api')->get('provinces/{city_psgc}/cities', 'BarangayController@listCities')->name('api.household-head.store');
-Route::middleware('auth:api')->get('provinces/{city_psgc}/cities/{barangay_psgc}/barangays', 'BarangayController@listBarangays')->name('api.household-head.store');
-Route::post('logout', 'AuthController@logout')->name('api.auth.logout');
-// Route::middleware('auth:api')->post('logout', 'AuthController@logout')->name('api.auth.logout');

@@ -25,6 +25,10 @@ class CreateBarangaysTable extends Migration
             $table->string('subdistrict')->nullable();
             $table->timestamps();
         });
+        Schema::table('household_heads', function (Blueprint $table) {
+            $table->unsignedBigInteger('barangay_id')->nullable();
+            $table->foreign('barangay_id')->references('id')->on('barangays')->onDelete('set null');
+        });
     }
 
     /**
@@ -34,6 +38,9 @@ class CreateBarangaysTable extends Migration
      */
     public function down()
     {
+        Schema::table('household_heads', function (Blueprint $table) {
+            $table->dropForeign(['barangay_id']);
+        });
         Schema::dropIfExists('barangays');
     }
 }

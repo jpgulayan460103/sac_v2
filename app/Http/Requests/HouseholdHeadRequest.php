@@ -39,7 +39,7 @@ class HouseholdHeadRequest extends FormRequest
             'last_name' => ['required', new DisallowDash, new AllowedStringName,'min:2','max:100'],
             'ext_name' => [new AllowedStringName, new DisallowDash,'max:100'],
             'kasarian' => ['required','max:1'],
-            'barangay' => ['required'],
+            'barangay_id' => ['required'],
             'tirahan' => ['required', new AllowedString,'max:200'],
             'kalye' => ['required', new AllowedString,'max:200'],
             'cellphone_number' => ['required', new AllowedString],
