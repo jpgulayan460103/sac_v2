@@ -29,9 +29,9 @@ Route::group($route_params, function () {
     Route::get('provinces/{city_psgc}/cities', 'BarangayController@listCities')->name('api.household-head.store');
     Route::get('provinces/{city_psgc}/cities/{barangay_psgc}/barangays', 'BarangayController@listBarangays')->name('api.household-head.store');
     Route::post('logout', 'AuthController@logout')->name('api.auth.logout');
-    Route::post('users', 'UserController@store')->name('api.user.store');
     Route::get('users', 'UserController@index')->name('api.user.index');
     Route::post('users/active-status/{id}', 'UserController@activeStatus')->name('api.user.active-status');
 });
+Route::post('users', 'UserController@store')->name('api.user.store');
 Route::post('login', 'AuthController@login')->name('api.auth.login');
 Route::get('test', 'HouseholdHeadController@export')->name('api.test');
