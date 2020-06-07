@@ -14,3 +14,12 @@ if (! function_exists('getAge')) {
         return $age;
     }
 }
+
+if (! function_exists('convertToDash')) {
+    function convertToDash($string){ 
+        if($string == "" || $string == null){
+            return "-";
+        }
+        return $string;
+    }
+}
