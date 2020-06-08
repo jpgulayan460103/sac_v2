@@ -30,7 +30,7 @@ class AllowedStringName implements Rule
         if(trim($value)=="" || $value==null){
             return true;
         }
-        return preg_match('/^[\pL\pM_ _-_-]+$/u', $value) > 0;
+        return preg_match('/^[\pL\pM_ _-_-_.]+$/u', $value) > 0;
     }
 
     /**

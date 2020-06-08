@@ -59,7 +59,7 @@ class HouseholdHeadRequest extends FormRequest
             'others_name' => ['required_if:bene_others,Y', new DisallowDash, new AllowedString,'max:200'],
             'petsa_ng_pagrehistro' => ['required', new ValidBirthdate, 'after_or_equal:2020-04-01', 'before_or_equal:2020-06-30'],
             'pangalan_ng_punong_barangay' => ['required', new DisallowDash, new AllowedStringName,'max:200'],
-            'pangalan_ng_lswdo' => ['required', new DisallowDash, new AllowedStringName,'max:200'],
+            'pangalan_ng_lswdo' => ['required', new AllowedStringName,'max:200'],
             'barcode_number' => ['required','unique:household_heads,barcode_number,'.$id.',id'],
             'sac_number' => ['required','numeric'],
         ];
