@@ -35,7 +35,7 @@ class HouseholdHeadController extends Controller
         $end_date = $date_tommorow->subSecond();
         $end_date = $end_date->toDateTimeString();
         $household_heads->wherebetween('created_at',[$start_date, $end_date]);
-        $household_heads = $household_heads->paginate(10);
+        $household_heads = $household_heads->get();
         return [
             'household_heads' => fractal($household_heads, new HouseholdHeadTransformer)->parseIncludes('barangay,members')->toArray()
         ];
