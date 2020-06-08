@@ -40,7 +40,7 @@ class ExportHouseholdHeadTransformer extends TransformerAbstract
             $data['middle_name'],
             $data['ext_name'],
             '1 - Puno ng Pamilya',
-            Carbon::parse($data['kapanganakan'])->format('Y-m-d'),
+            Carbon::parse($data['kapanganakan'])->format('m/d/Y'),
             $data['kasarian'],
             $data['trabaho'],
             $data['sektor'],
@@ -59,11 +59,13 @@ class ExportHouseholdHeadTransformer extends TransformerAbstract
             convertToDash($data['katutubo_name']),
             $data['bene_others'],
             convertToDash($data['others_name']),
-            Carbon::parse($data['petsa_ng_pagrehistro'])->format('Y-m-d'),
+            Carbon::parse($data['petsa_ng_pagrehistro'])->format('m/d/Y'),
             $data['pangalan_ng_punong_barangay'],
             $data['pangalan_ng_lswdo'],
             str_pad($data['sac_number'],8,"0",STR_PAD_LEFT),
             $data['remarks'],
+            Carbon::parse($data['created_at'])->format('m/d/Y'),
+            $data['user']['username'],
         ];
     }
 }

@@ -55,6 +55,11 @@ class HouseholdHead extends Model
         return $this->belongsTo('App\Models\Barangay');
     }
 
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User');
+    }
+
     public function setKapanganakanAttribute($value)
     {
         $this->attributes['kapanganakan'] = Carbon::parse($value);

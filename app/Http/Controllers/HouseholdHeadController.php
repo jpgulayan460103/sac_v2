@@ -13,6 +13,8 @@ use App\Transformers\ExportHouseholdHeadTransformer;
 use App\Transformers\ExportHouseholdMemberTransformer;
 use Carbon\Carbon;
 use League\Csv\Writer;
+use App\Exports\HouseholdHeadExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 class HouseholdHeadController extends Controller
@@ -24,7 +26,7 @@ class HouseholdHeadController extends Controller
      */
     public function index()
     {
-        $household_heads = HouseholdHead::with('members','barangay');
+        $household_heads = HouseholdHead::with('members','barangay','user');
         if(Auth::user()->role == "user"){
             $household_heads->where('user_id',Auth::user()->id);
         }
@@ -37,7 +39,7 @@ class HouseholdHeadController extends Controller
         $household_heads->wherebetween('created_at',[$start_date, $end_date]);
         $household_heads = $household_heads->get();
         return [
-            'household_heads' => fractal($household_heads, new HouseholdHeadTransformer)->parseIncludes('barangay,members')->toArray()
+            'household_heads' => fractal($household_heads, new HouseholdHeadTransformer)->parseIncludes('barangay,members,user')->toArray()
         ];
     }
 
@@ -75,10 +77,13 @@ class HouseholdHeadController extends Controller
             'Pangalan ng LSWDO *',
             'SAC',
             'Remarks',
+            'Created on',
+            'Created by',
         ];
         $to_export = $this->index();
-        $households =  $to_export['household_heads']['data'];
         $for_export = [];
+        $for_export[] = $headers;
+        $households =  $to_export['household_heads']['data'];
         foreach ($households as $value) {
             $head = fractal([$value], new ExportHouseholdHeadTransformer)->toArray();
             $for_export[] = mb_convert_encoding($head['data'][0], 'UTF-16LE', 'UTF-8');
@@ -91,18 +96,23 @@ class HouseholdHeadController extends Controller
                     $member['pangalan_ng_punong_barangay'] = $value['pangalan_ng_punong_barangay'];
                     $member['pangalan_ng_lswdo'] = $value['pangalan_ng_lswdo'];
                     $member['sac_number'] = $value['sac_number'];
+                    $member['created_at'] = $value['created_at'];
+                    $member['remarks'] = $value['remarks'];
+                    $member['username'] = $value['user']['username'];
                     $member = fractal([$member],new ExportHouseholdMemberTransformer)->toArray();
                     $for_export[] = mb_convert_encoding($member['data'][0], 'UTF-16LE', 'UTF-8');
                 }
             }
-            // $for_export
         }
         $datetime = Carbon::now();
         $filename = "sac-forms-".$datetime->toDateString()."-".$datetime->format('H-i-s');
-        $writer = Writer::createFromPath("files/exported/$filename.csv", 'w+');
-        $writer->insertOne($headers);
-        $writer->insertAll($for_export);
-        return ['filename'=>$filename];
+        ob_end_clean();
+        ob_start();
+        Excel::store(new HouseholdHeadExport($for_export), "$filename.xlsx", 'public');
+        $url = \Storage::url("$filename.xlsx");
+        return [
+            'filename' => $url
+        ];
     }
 
     /**

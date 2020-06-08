@@ -5,6 +5,7 @@ namespace App\Transformers;
 use League\Fractal\TransformerAbstract;
 use App\Transformers\HouseholdMemberTransformer;
 use App\Transformers\BarangayTransformer;
+use App\Transformers\UserTransformer;
 
 class HouseholdHeadTransformer extends TransformerAbstract
 {
@@ -25,6 +26,7 @@ class HouseholdHeadTransformer extends TransformerAbstract
     protected $availableIncludes = [
         'barangay',
         'members',
+        'user',
     ];
     
     /**
@@ -66,6 +68,7 @@ class HouseholdHeadTransformer extends TransformerAbstract
             'sac_number' => $table->sac_number,
             'remarks' => $table->remarks,
             'allow_delete' => $table->created_at->format("m-d-Y") == \Carbon\Carbon::now()->format("m-d-Y"),
+            'created_at' => $table->created_at,
         ];
     }
 
@@ -73,6 +76,12 @@ class HouseholdHeadTransformer extends TransformerAbstract
     {
         if($table->barangay){
             return $this->item($table->barangay, new BarangayTransformer);
+        }
+    }
+    public function includeUser($table)
+    {
+        if($table->user){
+            return $this->item($table->user, new UserTransformer);
         }
     }
     public function includeMembers($table)
