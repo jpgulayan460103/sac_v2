@@ -59,7 +59,7 @@ class ExportHouseholdMemberTransformer extends TransformerAbstract
             "-",
             "-",
             "-",
-            Carbon::parse($data['petsa_ng_pagrehistro'])->format('m/d/Y'),
+            Carbon::parse($data['petsa_ng_pagrehistro'])->format('Y-m-d'),
             $data['pangalan_ng_punong_barangay'],
             $data['pangalan_ng_lswdo'],
             str_pad($data['sac_number'],8,"0",STR_PAD_LEFT),
