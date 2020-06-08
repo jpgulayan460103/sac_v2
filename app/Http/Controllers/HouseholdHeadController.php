@@ -81,7 +81,7 @@ class HouseholdHeadController extends Controller
         $for_export = [];
         foreach ($households as $value) {
             $head = fractal([$value], new ExportHouseholdHeadTransformer)->toArray();
-            $for_export[] = $head['data'][0];
+            $for_export[] = mb_convert_encoding($head['data'][0], 'UTF-16LE', 'UTF-8');
             if($value['members']['data'] != array()){
                 foreach ($value['members']['data'] as $member) {
                     $member['barcode_number'] = $value['barcode_number'];
@@ -92,7 +92,7 @@ class HouseholdHeadController extends Controller
                     $member['pangalan_ng_lswdo'] = $value['pangalan_ng_lswdo'];
                     $member['sac_number'] = $value['sac_number'];
                     $member = fractal([$member],new ExportHouseholdMemberTransformer)->toArray();
-                    $for_export[] = $member['data'][0];
+                    $for_export[] = mb_convert_encoding($member['data'][0], 'UTF-16LE', 'UTF-8');
                 }
             }
             // $for_export
