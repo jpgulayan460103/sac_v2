@@ -40,7 +40,7 @@ class ExportHouseholdMemberTransformer extends TransformerAbstract
             $data['middle_name'],
             $data['ext_name'],
             $data['relasyon_sa_punong_pamilya'],
-            Carbon::parse($data['kapanganakan'])->format('m/d/Y'),
+            Carbon::parse($data['kapanganakan'])->format('Y-m-d'),
             $data['kasarian'],
             $data['trabaho'],
             $data['sektor'],
