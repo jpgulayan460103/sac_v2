@@ -197,9 +197,9 @@ class HouseholdHeadController extends Controller
      * @param  \App\Models\HouseholdHead  $householdHead
      * @return \Illuminate\Http\Response
      */
-    public function destroy(HouseholdHead $householdHead)
+    public function destroy(HouseholdHead $householdHead, $id)
     {
-        //
+        $householdHead->findOrFail($id)->delete();
     }
 
     public function test(Request $request)

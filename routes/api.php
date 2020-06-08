@@ -24,6 +24,7 @@ Route::group($route_params, function () {
     Route::get('household-heads', 'HouseholdHeadController@index')->name('api.household-head.index');
     Route::post('household-heads', 'HouseholdHeadController@store')->name('api.household-head.store');
     Route::put('household-heads/{id}', 'HouseholdHeadController@update')->name('api.household-head.update');
+    Route::delete('household-heads/{id}', 'HouseholdHeadController@destroy')->name('api.household-head.destroy');
     Route::post('household-heads/export', 'HouseholdHeadController@export')->name('api.household-head.export');
     Route::get('provinces', 'BarangayController@listProvinces')->name('api.household-head.store');
     Route::get('provinces/{city_psgc}/cities', 'BarangayController@listCities')->name('api.household-head.store');
