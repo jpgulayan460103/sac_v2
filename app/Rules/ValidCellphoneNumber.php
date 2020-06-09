@@ -26,7 +26,7 @@ class ValidCellphoneNumber implements Rule
      */
     public function passes($attribute, $value)
     {
-        if($value != "-" && strlen($value) > 11){
+        if($value != "-" && strlen($value) != 11){
             $this->error_type = "char";
             return false;
         }
