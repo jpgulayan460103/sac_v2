@@ -43,7 +43,7 @@ class HouseholdHeadRequest extends FormRequest
             'barangay_id' => ['required'],
             'tirahan' => ['required', new AllowedString,'max:100'],
             'kalye' => ['required', new AllowedString,'max:100'],
-            'cellphone_number' => ['required','numeric', new AllowedString, new ValidCellphoneNumber],
+            'cellphone_number' => ['required', new AllowedString, new ValidCellphoneNumber],
             'uri_ng_id' => ['required', new AllowedString,'max:80'],
             'numero_ng_id' => ['required', new AllowedString,'max:80'],
             'kapanganakan' => ['required', new ValidBirthdate],
