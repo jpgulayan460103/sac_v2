@@ -11,13 +11,34 @@ class User extends Authenticatable
 {
     use HasApiTokens, Notifiable;
 
+    public static function boot() {
+        parent::boot();
+    
+        static::creating(function (User $item) {
+            $item->name = "$item->first_name $item->middle_name $item->last_name";
+        });
+    
+        static::updating(function (User $item) {
+            $item->name = "$item->first_name $item->middle_name $item->last_name";
+        });
+    }
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'username', 'password', 'confirmed', 'role',
+        'name',
+        'username',
+        'password',
+        'confirmed',
+        'role',
+        'position',
+        'first_name',
+        'middle_name',
+        'last_name',
+        'barangay_id',
     ];
 
     /**
@@ -35,6 +56,11 @@ class User extends Authenticatable
 
     public function AauthAcessToken(){
         return $this->hasMany('\App\Models\OauthAccessToken');
+    }
+
+    public function barangay()
+    {
+        return $this->belongsTo('App\Models\Barangay');
     }
 
     /**

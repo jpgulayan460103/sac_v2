@@ -29,7 +29,10 @@ class UserRequest extends FormRequest
         }
         return [
             'username' => 'required|unique:users,username,'.$id.',id|max:12',
-            'name' => 'required|min:3|max:80',
+            'first_name' => 'required|min:2|max:40',
+            'middle_name' => 'max:40',
+            'last_name' => 'required|min:2|max:40',
+            'position' => 'required',
             'password' => 'required|confirmed|min:6|max:16',
         ];
     }

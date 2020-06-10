@@ -23,7 +23,7 @@ class AuthController extends Controller
                 'message' => 'Invalid credentials'
             ],422);
         }
-        $user = User::whereUsername($request->username)->first();
+        $user = User::whereUsername($request->username)->with('barangay')->first();
         if($user->confirmed != 1){
             return response([
                 'message' => 'Your account is not active.'

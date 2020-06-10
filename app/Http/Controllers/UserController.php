@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Requests\UserRequest;
+use Auth;
 
 class UserController extends Controller
 {
@@ -15,6 +16,10 @@ class UserController extends Controller
      */
     public function index()
     {
+        $user = Auth::user();
+        if($user->role != "admin"){
+            abort(404);
+        }
         return [
             'users' => User::all()
         ];
@@ -40,6 +45,10 @@ class UserController extends Controller
     {
         User::create([
             'name' => $request->name,
+            'first_name' => $request->first_name,
+            'middle_name' => $request->middle_name,
+            'last_name' => $request->last_name,
+            'barangay_id' => $request->barangay_id,
             'username' => $request->username,
             'role' => 'user',
             'password' => bcrypt($request->password),
