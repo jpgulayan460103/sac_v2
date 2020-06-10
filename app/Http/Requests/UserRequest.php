@@ -24,16 +24,23 @@ class UserRequest extends FormRequest
     public function rules()
     {
         $id = null;
+        $change_password = false;
         if(request()->has('id')){
             $id = request('id');
         }
-        return [
+        if(request()->has('change_password')){
+            $change_password = request('change_password');
+        }
+        $rules = [
             'username' => 'required|unique:users,username,'.$id.',id|max:12',
             'first_name' => 'required|min:2|max:40',
             'middle_name' => 'max:40',
             'last_name' => 'required|min:2|max:40',
             'position' => 'required',
-            'password' => 'required|confirmed|min:6|max:16',
         ];
+        if($change_password){
+            $rules['password'] = 'required|confirmed|min:6|max:16';
+        }
+        return $rules;
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Requests\UserRequest;
+use App\Transformers\UserTransformer;
 use Auth;
 
 class UserController extends Controller
@@ -20,8 +21,9 @@ class UserController extends Controller
         if($user->role != "admin"){
             abort(404);
         }
+        $user = User::with('barangay')->orderBy('created_at')->get();
         return [
-            'users' => User::all()
+            'users' => fractal($user, new UserTransformer)->parseIncludes('barangay')->toArray()
         ];
     }
 
@@ -48,6 +50,7 @@ class UserController extends Controller
             'first_name' => $request->first_name,
             'middle_name' => $request->middle_name,
             'last_name' => $request->last_name,
+            'position' => $request->position,
             'barangay_id' => $request->barangay_id,
             'username' => $request->username,
             'role' => 'user',
@@ -85,9 +88,18 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, $id)
     {
-        //
+        if($request->change_password){
+            $data = $request->all();
+            $data['password'] = bcrypt($data['password']);
+        }else{
+            $data = $request->except(['password']);
+        }
+        if($data['position'] == "Field Staff"){
+            $data['barangay_id'] = null;
+        }
+        User::find($id)->update($data);
     }
 
     /**
@@ -108,9 +120,25 @@ class UserController extends Controller
             $is_active = 1;
         }else{
             $is_active = 0;
+            $user->AauthAcessToken()->delete();
         }
         $user->update([
             'confirmed' => $is_active
+        ]);
+
+        return $user;
+    }
+
+    public function roleStatus(User $userModel, $id)
+    {
+        $user = $userModel->find($id);
+        if($user->role == "admin"){
+            $role = "user";
+        }else{
+            $role = "admin";
+        }
+        $user->update([
+            'role' => $role
         ]);
 
         return $user;
