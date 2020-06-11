@@ -25,7 +25,8 @@ Route::group($route_params, function () {
     Route::post('household-heads', 'HouseholdHeadController@store')->name('api.household-head.store');
     Route::put('household-heads/{id}', 'HouseholdHeadController@update')->name('api.household-head.update');
     Route::delete('household-heads/{id}', 'HouseholdHeadController@destroy')->name('api.household-head.destroy');
-    Route::post('household-heads/export', 'HouseholdHeadController@export')->name('api.household-head.export');
+    Route::post('export/household-heads/create', 'HouseholdHeadController@createExport')->name('api.household-head.createExport');
+    Route::post('export/household-heads/write', 'HouseholdHeadController@writeExport')->name('api.household-head.writeExport');
     Route::post('logout', 'AuthController@logout')->name('api.auth.logout');
     Route::get('users', 'UserController@index')->name('api.user.index');
     Route::post('users/active-status/{id}', 'UserController@activeStatus')->name('api.user.active-status');

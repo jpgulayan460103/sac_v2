@@ -26,26 +26,86 @@ class HouseholdHeadController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $household_heads = HouseholdHead::with('members','barangay','user');
         if(Auth::user()->role == "user"){
             $household_heads->where('user_id',Auth::user()->id);
         }
-        $date_now = Carbon::now()->format('Y-m-d');
-        $date_now = Carbon::parse($date_now);
-        $start_date = $date_now->toDateTimeString();
-        $date_tommorow = $date_now->addDay(1);
-        $end_date = $date_tommorow->subSecond();
-        $end_date = $end_date->toDateTimeString();
-        $household_heads->wherebetween('created_at',[$start_date, $end_date]);
-        $household_heads = $household_heads->get();
+        $key = request('query');
+        if ($key){
+            $household_heads->where(function ($query) use ($key) {
+                $query->where('first_name','like',"%$key%");
+                $query->orWhere('middle_name','like',"%$key%");
+                $query->orWhere('barcode_number','like',"%$key%");
+                $query->orWhere('last_name','like',"%$key%");
+            });
+        }else{
+            if($request->startDate){
+                $start_date = Carbon::parse($request->startDate)->toDateTimeString();
+                $end_date = Carbon::parse($request->endDate)->addDay(1)->subSecond()->toDateTimeString();
+            }else{
+                $date_now = Carbon::now()->format('Y-m-d');
+                $date_now = Carbon::parse($date_now);
+                $start_date = $date_now->toDateTimeString();
+                $date_tommorow = $date_now->addDay(1);
+                $end_date = $date_tommorow->subSecond();
+                $end_date = $end_date->toDateTimeString();
+            }
+            // return [$start_date, $end_date];
+            $household_heads->wherebetween('created_at',[$start_date, $end_date]);
+        }
+        if(request()->has('currentPage')){
+            $per_page = 500;
+        }else{
+            $per_page = 50;
+        }
+        $household_heads = $household_heads->paginate($per_page);
         return [
             'household_heads' => fractal($household_heads, new HouseholdHeadTransformer)->parseIncludes('barangay,members,user')->toArray()
         ];
     }
 
-    public function export(Request $request)
+    public function writeExport(Request $request)
+    {
+        $filename = $request->filename;
+        $to_export = $this->index($request);
+        $for_export = [];
+        $households =  $to_export['household_heads']['data'];
+        $total_pages =  $to_export['household_heads']['meta']['pagination']['total_pages'];
+        foreach ($households as $value) {
+            $head = fractal([$value], new ExportHouseholdHeadTransformer)->toArray();
+            $for_export[] = $head['data'][0];
+            if($value['members']['data'] != array()){
+                foreach ($value['members']['data'] as $member) {
+                    $member['barcode_number'] = $value['barcode_number'];
+                    $member['barangay_psgc'] = $value['barangay']['barangay_psgc'];
+                    $member['city_name'] = $value['barangay']['city_name'];
+                    $member['petsa_ng_pagrehistro'] = $value['petsa_ng_pagrehistro'];
+                    $member['pangalan_ng_punong_barangay'] = $value['pangalan_ng_punong_barangay'];
+                    $member['pangalan_ng_lswdo'] = $value['pangalan_ng_lswdo'];
+                    $member['sac_number'] = $value['sac_number'];
+                    $member['created_at'] = $value['created_at'];
+                    $member['remarks'] = $value['remarks'];
+                    $member['username'] = $value['user']['username'];
+                    $member = fractal([$member],new ExportHouseholdMemberTransformer)->toArray();
+                    $for_export[] = $member['data'][0];
+                }
+            }
+        }
+        $spreadsheet = IOFactory::load("../storage/app/public/$filename");
+        $spreadsheet->setActiveSheetIndex(0);
+        $row = $spreadsheet->getActiveSheet()->getHighestRow()+1;
+        $sheet = $spreadsheet->getActiveSheet()->fromArray($for_export, NULL, "A$row");
+        $writer = new Xlsx($spreadsheet);
+        $writer->save("../storage/app/public/$filename");
+        return [
+            'filename' => $filename,
+            'total_pages' => $total_pages,
+        ];
+    }
+
+    public function createExport(Request $request)
     {
         $headers = [
             'Row Indicator *',
@@ -82,46 +142,17 @@ class HouseholdHeadController extends Controller
             'Created on',
             'Created by',
         ];
-        $to_export = $this->index();
-        $for_export = [];
-        $for_export[] = $headers;
-        $households =  $to_export['household_heads']['data'];
-        foreach ($households as $value) {
-            $head = fractal([$value], new ExportHouseholdHeadTransformer)->toArray();
-            $for_export[] = $head['data'][0];
-            if($value['members']['data'] != array()){
-                foreach ($value['members']['data'] as $member) {
-                    $member['barcode_number'] = $value['barcode_number'];
-                    $member['barangay_psgc'] = $value['barangay']['barangay_psgc'];
-                    $member['city_name'] = $value['barangay']['city_name'];
-                    $member['petsa_ng_pagrehistro'] = $value['petsa_ng_pagrehistro'];
-                    $member['pangalan_ng_punong_barangay'] = $value['pangalan_ng_punong_barangay'];
-                    $member['pangalan_ng_lswdo'] = $value['pangalan_ng_lswdo'];
-                    $member['sac_number'] = $value['sac_number'];
-                    $member['created_at'] = $value['created_at'];
-                    $member['remarks'] = $value['remarks'];
-                    $member['username'] = $value['user']['username'];
-                    $member = fractal([$member],new ExportHouseholdMemberTransformer)->toArray();
-                    $for_export[] = $member['data'][0];
-                }
-            }
-        }
-        $datetime = Carbon::now();
-        $filename = "sac-forms-".$datetime->toDateString()."-".$datetime->format('H-i-s');
-        ob_end_clean();
-        ob_start();
-        $url = \Storage::url("$filename.xlsx");
-        //load
-        $spreadsheet = IOFactory::load("../storage/app/public/test.xlsx");
-        $spreadsheet->setActiveSheetIndex(0);
-        // $spreadsheet = new Spreadsheet(); // new excel
-        $sheet = $spreadsheet->getActiveSheet()->fromArray($for_export, NULL, 'A4410');
 
+        $datetime = Carbon::now();
+        $filename = "sac-forms-".$datetime->toDateString()."-".$datetime->format('H-i-s').".xlsx";
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet()->fromArray($headers, NULL, 'A1');
         $writer = new Xlsx($spreadsheet);
-        $writer->save("../storage/app/public/test.xlsx");
-        // Excel::store(new HouseholdHeadExport($for_export), "$filename.xlsx", 'public');
+        $writer->save("../storage/app/public/$filename");
+        $url = \Storage::url("$filename");
         return [
-            'filename' => $url
+            'filename' => $filename,
+            'path' => $url
         ];
     }
 
