@@ -15,7 +15,9 @@ use Carbon\Carbon;
 use League\Csv\Writer;
 use App\Exports\HouseholdHeadExport;
 use Maatwebsite\Excel\Facades\Excel;
-
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class HouseholdHeadController extends Controller
 {
@@ -108,8 +110,16 @@ class HouseholdHeadController extends Controller
         $filename = "sac-forms-".$datetime->toDateString()."-".$datetime->format('H-i-s');
         ob_end_clean();
         ob_start();
-        Excel::store(new HouseholdHeadExport($for_export), "$filename.xlsx", 'public');
         $url = \Storage::url("$filename.xlsx");
+        //load
+        $spreadsheet = IOFactory::load("../storage/app/public/test.xlsx");
+        $spreadsheet->setActiveSheetIndex(0);
+        // $spreadsheet = new Spreadsheet(); // new excel
+        $sheet = $spreadsheet->getActiveSheet()->fromArray($for_export, NULL, 'A4410');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save("../storage/app/public/test.xlsx");
+        // Excel::store(new HouseholdHeadExport($for_export), "$filename.xlsx", 'public');
         return [
             'filename' => $url
         ];
