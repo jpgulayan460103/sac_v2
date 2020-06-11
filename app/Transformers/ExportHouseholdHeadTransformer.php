@@ -65,7 +65,7 @@ class ExportHouseholdHeadTransformer extends TransformerAbstract
             str_pad($data['sac_number'],8,"0",STR_PAD_LEFT),
             $data['remarks'],
             Carbon::parse($data['created_at'])->format('m/d/Y'),
-            $data['user']['username'],
+            $data['user']['name'],
         ];
     }
 }

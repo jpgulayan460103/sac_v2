@@ -87,7 +87,7 @@ class HouseholdHeadController extends Controller
                     $member['sac_number'] = $value['sac_number'];
                     $member['created_at'] = $value['created_at'];
                     $member['remarks'] = $value['remarks'];
-                    $member['username'] = $value['user']['username'];
+                    $member['username'] = $value['user']['name'];
                     $member = fractal([$member],new ExportHouseholdMemberTransformer)->toArray();
                     $for_export[] = $member['data'][0];
                 }
@@ -139,8 +139,8 @@ class HouseholdHeadController extends Controller
             'Pangalan ng LSWDO *',
             'SAC',
             'Remarks',
-            'Created on',
-            'Created by',
+            'Encoded on',
+            'Encoded by',
         ];
 
         $datetime = Carbon::now();
