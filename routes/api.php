@@ -33,6 +33,7 @@ Route::group($route_params, function () {
     Route::post('users/role-status/{id}', 'UserController@roleStatus')->name('api.user.role-status');
     Route::put('users/{id}', 'UserController@update')->name('api.user.update');
     Route::get('autocompletes/trabahos', 'HouseholdHeadController@listTrabaho')->name('api.user.update');
+    Route::get('reports/encoding', 'ReportController@encoding')->name('api.report.encoding');
 });
 Route::get('provinces', 'BarangayController@listProvinces')->name('api.barangay.province');
 Route::get('provinces/{city_psgc}/cities', 'BarangayController@listCities')->name('api.barangay.city');
