@@ -261,4 +261,15 @@ class HouseholdHeadController extends Controller
         $end_date = $date_tommorow->subSecond();
         return $end_date;
     }
+
+    public function listTrabaho(Type $var = null)
+    {
+        $heads = HouseholdHead::select('trabaho')->distinct()->orderBy('trabaho')->pluck('trabaho')->toArray();
+        $members = HouseholdMember::select('trabaho')->distinct()->orderBy('trabaho')->pluck('trabaho')->toArray();
+        $trabaho = array_merge($heads,$members);
+        $trabaho = array_values(array_unique($trabaho));
+        return [
+            'trabaho' => $trabaho
+        ];
+    }
 }
