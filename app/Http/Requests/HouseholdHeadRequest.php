@@ -10,6 +10,7 @@ use App\Rules\ValidBirthdate;
 use App\Rules\RequiredIfNotEmpty;
 use App\Rules\ValidRelasyonAge;
 use App\Rules\ValidCellphoneNumber;
+use App\Models\HouseholdHead;
 
 class HouseholdHeadRequest extends FormRequest
 {
@@ -30,10 +31,7 @@ class HouseholdHeadRequest extends FormRequest
      */
     public function rules()
     {
-        $id = null;
-        if(request()->has('id')){
-            $id = request('id');
-        }
+
         $rules = [
             'first_name' => ['required', new DisallowDash, new AllowedStringName,'min:2','max:40'],
             'middle_name' => [new AllowedStringName, new DisallowDash,'max:40'],
@@ -61,7 +59,7 @@ class HouseholdHeadRequest extends FormRequest
             'petsa_ng_pagrehistro' => ['required', new ValidBirthdate, 'after_or_equal:2020-04-01', 'before_or_equal:2020-06-30'],
             'pangalan_ng_punong_barangay' => ['required', new DisallowDash, new AllowedStringName,'max:80'],
             'pangalan_ng_lswdo' => ['required', new AllowedStringName,'max:80'],
-            'barcode_number' => ['required','unique:household_heads,barcode_number,'.$id.',id'],
+            'barcode_number' => ['required'],
             'sac_number' => ['required','numeric'],
         ];
 
@@ -113,7 +111,11 @@ class HouseholdHeadRequest extends FormRequest
 
     public function withValidator($validator)
     {
-        $validator->after(function ($validator) {
+        $id = null;
+        if(request()->has('id')){
+            $id = request('id');
+        }
+        $validator->after(function ($validator) use ($id) {
             if(request()->has('age')){
                 if(request('age') < 12){
                     $validator->errors()->add("age", "Must be 12 years old and above.");
@@ -122,6 +124,20 @@ class HouseholdHeadRequest extends FormRequest
             if(request()->has('sac_number')){
                 if(strlen(request('sac_number')) > 8){
                     $validator->errors()->add("sac_number", "The sac number must not exceed 8 characters.");
+                }
+            }
+            if(request()->has('barcode_number')){
+                $barcode_number = request("barcode_number");
+                $household_head = HouseholdHead::whereBarcodeNumber($barcode_number);
+                if($id != null){
+                    $household_head->where("id","<>", $id);
+                }
+                $household_head = $household_head->first();
+                if($household_head != null){
+                    $last_name = $household_head->last_name;
+                    $first_name = $household_head->first_name;
+                    $middle_name = $household_head->middle_name;
+                    $validator->errors()->add("barcode_number", "Already belongs to $last_name, $first_name $middle_name");
                 }
             }
         });
