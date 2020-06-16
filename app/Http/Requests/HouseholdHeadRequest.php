@@ -126,6 +126,13 @@ class HouseholdHeadRequest extends FormRequest
                 if(strlen(request('sac_number')) > 8){
                     $validator->errors()->add("sac_number", "The sac number must not exceed 8 characters.");
                 }
+                if(request()->has('lungsod')){
+                    if(request('lungsod') == "112402000"){
+                        if(request('sac_number') > 500000){
+                            $validator->errors()->add("sac_number", "00500000 is maximum number allowed for this 'lungsod'.");
+                        }
+                    }
+                }
             }
             if(request()->has('barcode_number')){
                 $barcode_number = request("barcode_number");
