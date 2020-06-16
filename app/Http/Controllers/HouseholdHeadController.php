@@ -29,8 +29,17 @@ class HouseholdHeadController extends Controller
     public function index(Request $request)
     {
         $household_heads = HouseholdHead::with('members','barangay','user');
+        $household_heads->select('household_heads.*');
+        $household_heads->addSelect('barangays.barangay_psgc');
+        $household_heads->addSelect('barangays.province_psgc');
+        $household_heads->addSelect('barangays.city_psgc');
+        $household_heads->leftJoin('barangays', 'household_heads.barangay_id', '=', 'barangays.id');
         if(Auth::user()->role == "user"){
             $household_heads->where('user_id',Auth::user()->id);
+        }else{
+            if($request->user_id){
+                $household_heads->where('user_id',$request->user_id);
+            }
         }
         $key = request('query');
         if ($key){
@@ -39,6 +48,9 @@ class HouseholdHeadController extends Controller
                 $query->orWhere('middle_name','like',"%$key%");
                 $query->orWhere('barcode_number','like',"%$key%");
                 $query->orWhere('last_name','like',"%$key%");
+                $query->orWhere('barangay_psgc','like',"%$key%");
+                $query->orWhere('province_psgc','like',"%$key%");
+                $query->orWhere('city_psgc','like',"%$key%");
             });
         }else{
             if($request->startDate){
@@ -53,7 +65,7 @@ class HouseholdHeadController extends Controller
                 $end_date = $end_date->toDateTimeString();
             }
             // return [$start_date, $end_date];
-            $household_heads->wherebetween('created_at',[$start_date, $end_date]);
+            $household_heads->wherebetween('household_heads.created_at',[$start_date, $end_date]);
         }
         if(request()->has('currentPage')){
             $per_page = 500;
