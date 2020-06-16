@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return redirect(config('services.ui.url'));
+    // return redirect(config('services.ui.url'));
 })->name('home');
 Route::get('/login', function () {
     return redirect(config('services.ui.url'));
