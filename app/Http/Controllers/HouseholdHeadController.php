@@ -229,14 +229,24 @@ class HouseholdHeadController extends Controller
         DB::beginTransaction();
         try{
             $hhead = $householdHead->find($id);
-            if ($request->members && $request->members != array()) {
-                foreach ($request->members as $member) {
-                    $hmember = HouseholdMember::find($member['id']);
-                    $hmember->update($member);
+            $hhead->update($request->all());
+            $hhead = $householdHead->find($id);
+            $members = array();
+            $roster_ids_form = array();
+            $roster_ids = HouseholdMember::where('household_head_id',$request->id)->pluck('id')->toArray();
+            foreach ($request->members as $key => $member) {
+                if(isset($member['id'])){
+                    HouseholdMember::find($member['id'])->update($member);
+                    $roster_ids_form[] = $member['id']; 
+                }else{
+                    $members[$key] = new HouseholdMember($member);
+                    $members[$key]->household_head_id = $hhead->id;
+                    $members[$key]->save();
                 }
             }
-            $hhead->update($request->all());
-                DB::commit();
+            $removed_roster_ids = array_diff($roster_ids,$roster_ids_form);
+            HouseholdMember::whereIn('id', $removed_roster_ids)->delete();
+            DB::commit();
             }
         catch(\Exception $e){DB::rollback();throw $e;}
         return $householdHead->find($id);
@@ -267,6 +277,9 @@ class HouseholdHeadController extends Controller
         $heads = HouseholdHead::select('trabaho')->distinct()->orderBy('trabaho')->pluck('trabaho')->toArray();
         $members = HouseholdMember::select('trabaho')->distinct()->orderBy('trabaho')->pluck('trabaho')->toArray();
         $trabaho = array_merge($heads,$members);
+        $trabaho = array_map(function($item){
+            return removeFirstCharDash($item);
+        }, $trabaho);
         $trabaho = array_values(array_unique($trabaho));
         return [
             'trabaho' => $trabaho

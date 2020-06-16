@@ -23,3 +23,25 @@ if (! function_exists('convertToDash')) {
         return $string;
     }
 }
+
+if(!  function_exists("removeFirstCharDash")){
+    function removeFirstCharDash($string)
+    {
+        if($string != null){
+            for ($i=0; $i < strlen($string); $i++) { 
+                if($string[$i] == "-" || $string[$i] == "=" || $string[$i] == "+"){
+                    
+                }else{
+                    $cleanned = substr($string,$i);
+                    if(strtolower($cleanned) == "none"){
+                        return "-";
+                    }else{
+                        return $cleanned;
+                    }
+                }
+            }
+            return "-";
+        }
+        return $string;
+    }
+}

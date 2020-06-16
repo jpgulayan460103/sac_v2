@@ -10,6 +10,7 @@ use App\Rules\ValidBirthdate;
 use App\Rules\RequiredIfNotEmpty;
 use App\Rules\ValidRelasyonAge;
 use App\Rules\ValidCellphoneNumber;
+use App\Rules\MustHaveAlpha;
 use App\Models\HouseholdHead;
 
 class HouseholdHeadRequest extends FormRequest
@@ -33,32 +34,32 @@ class HouseholdHeadRequest extends FormRequest
     {
 
         $rules = [
-            'first_name' => ['required', new DisallowDash, new AllowedStringName,'min:2','max:40'],
-            'middle_name' => [new AllowedStringName, new DisallowDash,'max:40'],
-            'last_name' => ['required', new DisallowDash, new AllowedStringName,'min:2','max:40'],
-            'ext_name' => [new AllowedStringName, new DisallowDash,'max:40'],
+            'first_name' => ['required', new DisallowDash, new AllowedStringName,'min:2','max:40', new MustHaveAlpha],
+            'middle_name' => [new AllowedStringName, new DisallowDash,'max:40', new MustHaveAlpha],
+            'last_name' => ['required', new DisallowDash, new AllowedStringName,'min:2','max:40', new MustHaveAlpha],
+            'ext_name' => [new AllowedStringName, new DisallowDash,'max:40', new MustHaveAlpha],
             'kasarian' => ['required','max:1'],
             'barangay_id' => ['required'],
-            'tirahan' => ['required', new AllowedString,'max:100'],
-            'kalye' => ['required', new AllowedString,'max:100'],
+            'tirahan' => ['required', new AllowedString,'max:100', new MustHaveAlpha],
+            'kalye' => ['required', new AllowedString,'max:100', new MustHaveAlpha],
             'cellphone_number' => ['required', new AllowedString, new ValidCellphoneNumber],
             'uri_ng_id' => ['required', new AllowedString,'max:80'],
-            'numero_ng_id' => ['required', new AllowedString,'max:80'],
+            'numero_ng_id' => ['required', new AllowedString,'max:80', new MustHaveAlpha],
             'kapanganakan' => ['required', new ValidBirthdate],
-            'trabaho' => ['required', new AllowedString, new RequiredIfNotEmpty('pinagtratrabahuhang_lugar'),'max:60'],
-            'buwanang_kita' => ['required','numeric'],
-            'pinagtratrabahuhang_lugar' => ['required', new RequiredIfNotEmpty('trabaho'), new AllowedString,'max:80'],
+            'trabaho' => ['required', new AllowedString, new RequiredIfNotEmpty('pinagtratrabahuhang_lugar'),'max:60', new MustHaveAlpha],
+            'buwanang_kita' => ['required','numeric', new MustHaveAlpha],
+            'pinagtratrabahuhang_lugar' => ['required', new RequiredIfNotEmpty('trabaho'), new AllowedString,'max:80', new MustHaveAlpha],
             'sektor' => ['required', new AllowedString,'max:80'],
             'kondisyon_ng_kalusugan' => ['required', new AllowedString,'max:80'],
             'bene_uct' => ['required', new AllowedString,'max:80'],
             'bene_4ps' => ['required', new AllowedString,'max:80'],
             'katutubo' => ['required', new RequiredIfNotEmpty('katutubo_name'), new AllowedString,'max:80'],
             'katutubo_name' => ['required_if:katutubo,Y', new AllowedString,'max:80'],
-            'bene_others' => ['required', new RequiredIfNotEmpty('others_name'), new AllowedString,'max:80'],
+            'bene_others' => ['required', new RequiredIfNotEmpty('others_name'), new AllowedString,'max:80', new MustHaveAlpha],
             'others_name' => ['required_if:bene_others,Y', new DisallowDash, new AllowedString,'max:80'],
             'petsa_ng_pagrehistro' => ['required', new ValidBirthdate, 'after_or_equal:2020-04-01', 'before_or_equal:2020-06-30'],
-            'pangalan_ng_punong_barangay' => ['required', new DisallowDash, new AllowedStringName,'max:80'],
-            'pangalan_ng_lswdo' => ['required', new AllowedStringName,'max:80'],
+            'pangalan_ng_punong_barangay' => ['required', new DisallowDash, new AllowedStringName,'max:80', new MustHaveAlpha],
+            'pangalan_ng_lswdo' => ['required', new AllowedStringName,'max:80', new MustHaveAlpha],
             'barcode_number' => ['required'],
             'sac_number' => ['required','numeric'],
         ];
@@ -66,14 +67,14 @@ class HouseholdHeadRequest extends FormRequest
         if(request()->has('members')){
 			$members = request('members');
 			foreach ($members as $key => $member) {
-				$rules["members.$key.first_name"] = ['required',new DisallowDash,new AllowedStringName,'max:40'];
-				$rules["members.$key.middle_name"] = [new DisallowDash,new AllowedStringName,'max:40'];
-				$rules["members.$key.last_name"] = ['required',new DisallowDash,new AllowedStringName,'max:40'];
-				$rules["members.$key.ext_name"] = [new DisallowDash,new AllowedStringName,'max:40'];
+				$rules["members.$key.first_name"] = ['required',new DisallowDash,new AllowedStringName,'max:40', new MustHaveAlpha];
+				$rules["members.$key.middle_name"] = [new DisallowDash,new AllowedStringName,'max:40', new MustHaveAlpha];
+				$rules["members.$key.last_name"] = ['required',new DisallowDash,new AllowedStringName,'max:40', new MustHaveAlpha];
+				$rules["members.$key.ext_name"] = [new DisallowDash,new AllowedStringName,'max:40', new MustHaveAlpha];
 				$rules["members.$key.relasyon_sa_punong_pamilya"] = ['required',new ValidRelasyonAge($key),new AllowedString,'max:100'];
 				$rules["members.$key.kasarian"] = ['required','max:1'];
 				$rules["members.$key.kapanganakan"] = ['required', new ValidBirthdate];
-				$rules["members.$key.trabaho"] = ['required',new AllowedString,'max:60'];
+				$rules["members.$key.trabaho"] = ['required',new AllowedString,'max:60', new MustHaveAlpha];
 				$rules["members.$key.pinagtratrabahuhang_lugar"] = [new AllowedString,'max:80'];
 				$rules["members.$key.sektor"] = ['required',new AllowedString,'max:80'];
 				$rules["members.$key.kondisyon_ng_kalusugan"] = ['required',new AllowedString,'max:80'];
