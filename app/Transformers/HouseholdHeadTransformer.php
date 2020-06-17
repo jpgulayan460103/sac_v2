@@ -38,7 +38,7 @@ class HouseholdHeadTransformer extends TransformerAbstract
     {
         return [
             'id' => $table->id,
-            'barangay_id' => $table->barangay_id,
+            'barangay_id' => (integer)$table->barangay_id,
             'first_name' => $table->first_name,
             'middle_name' => $table->middle_name,
             'last_name' => $table->last_name,

@@ -37,6 +37,7 @@ class UserTransformer extends TransformerAbstract
             'name' => $table->name,
             'username' => $table->username,
             'confirmed' => $table->confirmed,
+            'status' => $table->confirmed == 1 ? "active" : "inactive",
             'role' => $table->role,
             'position' => $table->position,
             'first_name' => $table->first_name,

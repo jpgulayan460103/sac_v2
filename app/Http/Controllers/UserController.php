@@ -21,7 +21,7 @@ class UserController extends Controller
         if($user->role != "admin"){
             abort(404);
         }
-        $user = User::with('barangay')->orderBy('created_at')->get();
+        $user = User::with('barangay')->orderBy('created_at','desc')->get();
         return [
             'users' => fractal($user, new UserTransformer)->parseIncludes('barangay')->toArray()
         ];
