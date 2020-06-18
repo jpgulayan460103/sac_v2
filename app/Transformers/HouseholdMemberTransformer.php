@@ -33,7 +33,7 @@ class HouseholdMemberTransformer extends TransformerAbstract
     {
         return [
             'id' => $table->id,
-            'household_head_id' => $table->household_head_id,
+            'household_head_id' => (integer)$table->household_head_id,
             'first_name' => $table->first_name,
             'middle_name' => $table->middle_name,
             'last_name' => $table->last_name,
