@@ -40,7 +40,7 @@ class ExportHouseholdMemberTransformer extends TransformerAbstract
             removeFirstCharDash($data['middle_name']),
             removeFirstCharDash($data['ext_name']),
             $data['relasyon_sa_punong_pamilya'],
-            Carbon::parse($data['kapanganakan'])->format('m/d/Y'),
+            Carbon::parse($data['kapanganakan'])->toDateString(),
             $data['kasarian'],
             removeFirstCharDash($data['trabaho']),
             $data['sektor'],
@@ -59,12 +59,12 @@ class ExportHouseholdMemberTransformer extends TransformerAbstract
             "-",
             "-",
             "-",
-            Carbon::parse($data['petsa_ng_pagrehistro'])->format('m/d/Y'),
+            Carbon::parse($data['petsa_ng_pagrehistro'])->toDateString(),
             removeFirstCharDash($data['pangalan_ng_punong_barangay']),
             removeFirstCharDash($data['pangalan_ng_lswdo']),
             str_pad($data['sac_number'],8,"0",STR_PAD_LEFT),
             removeFirstCharDash($data['remarks']),
-            Carbon::parse($data['created_at'])->format('m/d/Y'),
+            Carbon::parse($data['created_at'])->toDateString(),
             $data['username'],
         ];
     }

@@ -82,12 +82,18 @@ class HouseholdHeadController extends Controller
     {
         $filename = $request->filename;
         $to_export = $this->index($request);
+        $writer = Writer::createFromPath("../storage/app/public/$filename", 'a+');
         $for_export = [];
         $households =  $to_export['household_heads']['data'];
         $total_pages =  $to_export['household_heads']['meta']['pagination']['total_pages'];
         foreach ($households as $value) {
             $head = fractal([$value], new ExportHouseholdHeadTransformer)->toArray();
-            $for_export[] = $head['data'][0];
+            $for_export = $head['data'][0];
+            $data = array();
+            foreach ($for_export as $export_data) {
+                $data[] = mb_convert_encoding($export_data, 'UTF-16LE', 'UTF-8');
+            }
+            $writer->insertOne($data);
             if($value['members']['data'] != array()){
                 foreach ($value['members']['data'] as $member) {
                     $member['barcode_number'] = $value['barcode_number'];
@@ -101,16 +107,15 @@ class HouseholdHeadController extends Controller
                     $member['remarks'] = $value['remarks'];
                     $member['username'] = $value['user']['name'];
                     $member = fractal([$member],new ExportHouseholdMemberTransformer)->toArray();
-                    $for_export[] = $member['data'][0];
+                    $for_export = $member['data'][0];
+                    $data = array();
+                    foreach ($for_export as $export_data) {
+                        $data[] = mb_convert_encoding($export_data, 'UTF-16LE', 'UTF-8');
+                    }
+                    $writer->insertOne($data);
                 }
             }
         }
-        $spreadsheet = IOFactory::load("../storage/app/public/$filename");
-        $spreadsheet->setActiveSheetIndex(0);
-        $row = $spreadsheet->getActiveSheet()->getHighestRow()+1;
-        $sheet = $spreadsheet->getActiveSheet()->fromArray($for_export, NULL, "A$row");
-        $writer = new Xlsx($spreadsheet);
-        $writer->save("../storage/app/public/$filename");
         return [
             'filename' => $filename,
             'total_pages' => $total_pages,
@@ -156,11 +161,13 @@ class HouseholdHeadController extends Controller
         ];
 
         $datetime = Carbon::now();
-        $filename = "sac-forms-".$datetime->toDateString()."-".$datetime->format('H-i-s').".xlsx";
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet()->fromArray($headers, NULL, 'A1');
-        $writer = new Xlsx($spreadsheet);
-        $writer->save("../storage/app/public/$filename");
+        $filename = "sac-forms-".$datetime->toDateString()."-".$datetime->format('H-i-s').".csv";
+        $writer = Writer::createFromPath("../storage/app/public/$filename", 'w+');
+        $writer->insertOne($headers);
+        // $spreadsheet = new Spreadsheet();
+        // $sheet = $spreadsheet->getActiveSheet()->fromArray($headers, NULL, 'A1');
+        // $writer = new Xlsx($spreadsheet);
+        // $writer->save("../storage/app/public/$filename");
         $url = \Storage::url("$filename");
         return [
             'filename' => $filename,
