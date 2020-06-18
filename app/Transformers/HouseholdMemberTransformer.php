@@ -40,7 +40,7 @@ class HouseholdMemberTransformer extends TransformerAbstract
             'ext_name' => $table->ext_name,
             'relasyon_sa_punong_pamilya' => $table->relasyon_sa_punong_pamilya,
             'kasarian' => $table->kasarian,
-            'kapanganakan' => $table->kapanganakan,
+            'kapanganakan' => $table->kapanganakan->toDateString(),
             'trabaho' => $table->trabaho,
             'pinagtratrabahuhang_lugar' => $table->pinagtratrabahuhang_lugar,
             'sektor' => $table->sektor,
