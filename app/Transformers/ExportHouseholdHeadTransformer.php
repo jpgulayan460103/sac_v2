@@ -56,7 +56,7 @@ class ExportHouseholdHeadTransformer extends TransformerAbstract
             $data['bene_uct'],
             $data['bene_4ps'],
             $data['katutubo'],
-            $data['katutubo_name'],
+            ($data['katutubo_name'] != null ? $data['katutubo_name'] : "-"),
             $data['bene_others'],
             convertToDash($data['others_name']),
             Carbon::parse($data['petsa_ng_pagrehistro'])->toDateString(),
