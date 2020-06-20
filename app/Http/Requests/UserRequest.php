@@ -43,4 +43,16 @@ class UserRequest extends FormRequest
         }
         return $rules;
     }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) use ($id) {
+            if(request()->has('city')){
+                if(request('city') == "112402000" && !request()->has('barangay_id')){
+                    $validator->errors()->add("position", "Should be LGU Barangay Staff for Davao City");
+                }
+            }
+
+        });
+    }
 }

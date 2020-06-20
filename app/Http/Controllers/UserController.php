@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Barangay;
 use App\Http\Requests\UserRequest;
 use App\Transformers\UserTransformer;
 use Auth;
@@ -45,13 +46,19 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
+        if($request->position == "LGU Municipality Staff"){
+            $barangay = Barangay::where("city_psgc", $request->city)->first();
+            $barangay_id = $barangay->id;
+        }else{
+            $barangay_id = $request->barangay_id;
+        }
         User::create([
             'name' => $request->name,
             'first_name' => $request->first_name,
             'middle_name' => $request->middle_name,
             'last_name' => $request->last_name,
             'position' => $request->position,
-            'barangay_id' => $request->barangay_id,
+            'barangay_id' => $barangay_id,
             'username' => $request->username,
             'role' => 'user',
             'password' => bcrypt($request->password),
