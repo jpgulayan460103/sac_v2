@@ -46,7 +46,7 @@ class UserRequest extends FormRequest
 
     public function withValidator($validator)
     {
-        $validator->after(function ($validator) use ($id) {
+        $validator->after(function ($validator) {
             if(request()->has('city')){
                 if(request('city') == "112402000" && !request()->has('barangay_id')){
                     $validator->errors()->add("position", "Should be LGU Barangay Staff for Davao City");
