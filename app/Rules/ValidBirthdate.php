@@ -38,7 +38,7 @@ class ValidBirthdate implements Rule
      */
     public function message()
     {
-        return 'The :attribute field must not contain a future date.';
+        return 'Must not contain a future date.';
     }
 
     public function custom_valid_date(string $value = null)

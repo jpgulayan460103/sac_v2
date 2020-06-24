@@ -43,6 +43,7 @@ class HouseholdHead extends Model
         'barcode_number',
         'sac_number',
         'remarks',
+        'sap_type',
     ];
 
     public function members()

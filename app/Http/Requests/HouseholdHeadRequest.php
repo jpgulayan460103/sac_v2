@@ -62,6 +62,7 @@ class HouseholdHeadRequest extends FormRequest
             'pangalan_ng_lswdo' => ['required', new AllowedStringName,'max:80', new MustHaveAlpha],
             'barcode_number' => ['required'],
             'sac_number' => ['required','numeric'],
+            'sap_type' => ['required'],
         ];
 
         if(request()->has('members')){

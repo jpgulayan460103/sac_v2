@@ -106,6 +106,7 @@ class HouseholdHeadController extends Controller
                     $member['created_at'] = $value['created_at'];
                     $member['remarks'] = $value['remarks'];
                     $member['username'] = $value['user']['name'];
+                    $member['sap_type'] = $value['sap_type'];
                     $member = fractal([$member],new ExportHouseholdMemberTransformer)->toArray();
                     $for_export = $member['data'][0];
                     $data = array();
@@ -158,6 +159,7 @@ class HouseholdHeadController extends Controller
             'Remarks',
             'Encoded on',
             'Encoded by',
+            'SAP Type',
         ];
 
         $datetime = Carbon::now();

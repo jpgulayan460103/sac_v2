@@ -67,6 +67,7 @@ class HouseholdHeadTransformer extends TransformerAbstract
             'barcode_number' => $table->barcode_number,
             'sac_number' => $table->sac_number,
             'remarks' => $table->remarks,
+            'sap_type' => $table->sap_type,
             'allow_delete' => $table->created_at->format("m-d-Y") == \Carbon\Carbon::now()->format("m-d-Y"),
             'created_at' => $table->created_at,
         ];

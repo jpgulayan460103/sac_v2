@@ -66,6 +66,7 @@ class ExportHouseholdMemberTransformer extends TransformerAbstract
             removeFirstCharDash($data['remarks']),
             Carbon::parse($data['created_at'])->toDateString(),
             $data['username'],
+            $data['sap_type'],
         ];
     }
 }
