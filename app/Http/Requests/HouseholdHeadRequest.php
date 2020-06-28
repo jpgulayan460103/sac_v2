@@ -45,7 +45,7 @@ class HouseholdHeadRequest extends FormRequest
             'cellphone_number' => ['required', new AllowedString, new ValidCellphoneNumber],
             'uri_ng_id' => ['required', new AllowedString,'max:80'],
             'numero_ng_id' => ['required', new AllowedString,'max:80', new MustHaveAlpha],
-            'kapanganakan' => ['required', new ValidBirthdate],
+            'kapanganakan' => ['required', new ValidBirthdate, 'after_or_equal:1900-01-01'],
             'trabaho' => ['required', new AllowedString, new RequiredIfNotEmpty('pinagtratrabahuhang_lugar'),'max:60', new MustHaveAlpha],
             'buwanang_kita' => ['required','numeric', new MustHaveAlpha],
             'pinagtratrabahuhang_lugar' => ['required', new RequiredIfNotEmpty('trabaho'), new AllowedString,'max:80', new MustHaveAlpha],
