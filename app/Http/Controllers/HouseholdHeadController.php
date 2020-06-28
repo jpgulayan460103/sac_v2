@@ -86,9 +86,18 @@ class HouseholdHeadController extends Controller
         $for_export = [];
         $households =  $to_export['household_heads']['data'];
         $total_pages =  $to_export['household_heads']['meta']['pagination']['total_pages'];
+        $batch = $request->page;
+        if($batch != 1){
+            if($request->page % 2 == 0){
+                $batch = $batch/2;
+            }else{
+                $batch = (($batch+1)/2);
+            }
+        }
         foreach ($households as $value) {
             $head = fractal([$value], new ExportHouseholdHeadTransformer)->toArray();
             $for_export = $head['data'][0];
+            $for_export['batch'] = $batch;
             $data = array();
             foreach ($for_export as $export_data) {
                 $data[] = mb_convert_encoding($export_data, 'UTF-16LE', 'UTF-8');
@@ -109,6 +118,7 @@ class HouseholdHeadController extends Controller
                     $member['sap_type'] = $value['sap_type'];
                     $member = fractal([$member],new ExportHouseholdMemberTransformer)->toArray();
                     $for_export = $member['data'][0];
+                    $for_export['batch'] = $batch;
                     $data = array();
                     foreach ($for_export as $export_data) {
                         $data[] = mb_convert_encoding($export_data, 'UTF-16LE', 'UTF-8');
@@ -160,6 +170,7 @@ class HouseholdHeadController extends Controller
             'Encoded on',
             'Encoded by',
             'SAP Type',
+            'Batch Upload',
         ];
 
         $datetime = Carbon::now();
