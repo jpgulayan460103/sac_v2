@@ -45,7 +45,7 @@ class HouseholdHeadRequest extends FormRequest
             'cellphone_number' => ['required', new AllowedString, new ValidCellphoneNumber],
             'uri_ng_id' => ['required', new AllowedString,'max:80'],
             'numero_ng_id' => ['required', new AllowedString,'max:80', new MustHaveAlpha],
-            'kapanganakan' => ['required', new ValidBirthdate, 'after_or_equal:1900-01-01'],
+            'kapanganakan' => ['required', new ValidBirthdate, 'after_or_equal:1850-01-01'],
             'trabaho' => ['required', new AllowedString, new RequiredIfNotEmpty('pinagtratrabahuhang_lugar'),'max:60', new MustHaveAlpha],
             'buwanang_kita' => ['required','numeric', new MustHaveAlpha],
             'pinagtratrabahuhang_lugar' => ['required', new RequiredIfNotEmpty('trabaho'), new AllowedString,'max:80', new MustHaveAlpha],
@@ -74,7 +74,7 @@ class HouseholdHeadRequest extends FormRequest
 				$rules["members.$key.ext_name"] = [new DisallowDash,new AllowedStringName,'max:40', new MustHaveAlpha];
 				$rules["members.$key.relasyon_sa_punong_pamilya"] = ['required',new ValidRelasyonAge($key),new AllowedString,'max:100'];
 				$rules["members.$key.kasarian"] = ['required','max:1'];
-				$rules["members.$key.kapanganakan"] = ['required', new ValidBirthdate, 'after_or_equal:1900-01-01'];
+				$rules["members.$key.kapanganakan"] = ['required', new ValidBirthdate, 'after_or_equal:1850-01-01'];
 				$rules["members.$key.trabaho"] = ['required',new AllowedString,'max:60', new MustHaveAlpha];
 				$rules["members.$key.pinagtratrabahuhang_lugar"] = [new AllowedString,'max:80'];
 				$rules["members.$key.sektor"] = ['required',new AllowedString,'max:80'];
