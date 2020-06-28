@@ -74,7 +74,7 @@ class HouseholdHeadRequest extends FormRequest
 				$rules["members.$key.ext_name"] = [new DisallowDash,new AllowedStringName,'max:40', new MustHaveAlpha];
 				$rules["members.$key.relasyon_sa_punong_pamilya"] = ['required',new ValidRelasyonAge($key),new AllowedString,'max:100'];
 				$rules["members.$key.kasarian"] = ['required','max:1'];
-				$rules["members.$key.kapanganakan"] = ['required', new ValidBirthdate];
+				$rules["members.$key.kapanganakan"] = ['required', new ValidBirthdate, 'after_or_equal:1900-01-01'];
 				$rules["members.$key.trabaho"] = ['required',new AllowedString,'max:60', new MustHaveAlpha];
 				$rules["members.$key.pinagtratrabahuhang_lugar"] = [new AllowedString,'max:80'];
 				$rules["members.$key.sektor"] = ['required',new AllowedString,'max:80'];
