@@ -102,6 +102,7 @@ class HouseholdHeadRequest extends FormRequest
 				$messages["members.$key.relasyon_sa_punong_pamilya.required"] = "Required";
 				$messages["members.$key.kasarian.required"] = "Required";
 				$messages["members.$key.kapanganakan.required"] = "Required";
+				$messages["members.$key.kapanganakan.after_or_equal"] = "Invalid Date";
 				$messages["members.$key.trabaho.required"] = "Required";
 				$messages["members.$key.sektor.required"] = "Required";
 				$messages["members.$key.kondisyon_ng_kalusugan.required"] = "Required";
@@ -121,6 +122,11 @@ class HouseholdHeadRequest extends FormRequest
             if(request()->has('age')){
                 if(request('age') < 12){
                     $validator->errors()->add("age", "Must be 12 years old and above.");
+                }
+            }
+            if(request()->has('ext_name')){
+                if(strlen(request('ext_name')) > 3){
+                    $validator->errors()->add("ext_name", "The ext name must not exceed 3 characters.");
                 }
             }
             if(request()->has('sac_number')){
