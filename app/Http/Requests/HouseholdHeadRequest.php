@@ -11,6 +11,8 @@ use App\Rules\RequiredIfNotEmpty;
 use App\Rules\ValidRelasyonAge;
 use App\Rules\ValidCellphoneNumber;
 use App\Rules\MustHaveAlpha;
+use App\Rules\ValidExtName;
+use App\Rules\InvalidateNone;
 use App\Models\HouseholdHead;
 
 class HouseholdHeadRequest extends FormRequest
@@ -35,9 +37,9 @@ class HouseholdHeadRequest extends FormRequest
 
         $rules = [
             'first_name' => ['required', new DisallowDash, new AllowedStringName,'min:2','max:40', new MustHaveAlpha],
-            'middle_name' => [new AllowedStringName, new DisallowDash,'max:40', new MustHaveAlpha],
+            'middle_name' => [new AllowedStringName, new DisallowDash,'max:40', new MustHaveAlpha, new InvalidateNone],
             'last_name' => ['required', new DisallowDash, new AllowedStringName,'min:2','max:40', new MustHaveAlpha],
-            'ext_name' => [new AllowedStringName, new DisallowDash,'max:40', new MustHaveAlpha],
+            'ext_name' => [new AllowedStringName, new DisallowDash,'max:40', new MustHaveAlpha, new ValidExtName, new InvalidateNone],
             'kasarian' => ['required','max:1'],
             'barangay_id' => ['required'],
             'tirahan' => ['required', new AllowedString,'max:100', new MustHaveAlpha],
@@ -69,9 +71,9 @@ class HouseholdHeadRequest extends FormRequest
 			$members = request('members');
 			foreach ($members as $key => $member) {
 				$rules["members.$key.first_name"] = ['required',new DisallowDash,new AllowedStringName,'max:40', new MustHaveAlpha];
-				$rules["members.$key.middle_name"] = [new DisallowDash,new AllowedStringName,'max:40', new MustHaveAlpha];
+				$rules["members.$key.middle_name"] = [new DisallowDash,new AllowedStringName,'max:40', new MustHaveAlpha, new InvalidateNone];
 				$rules["members.$key.last_name"] = ['required',new DisallowDash,new AllowedStringName,'max:40', new MustHaveAlpha];
-				$rules["members.$key.ext_name"] = [new DisallowDash,new AllowedStringName,'max:40', new MustHaveAlpha];
+				$rules["members.$key.ext_name"] = [new DisallowDash,new AllowedStringName,'max:40', new MustHaveAlpha, new ValidExtName, new InvalidateNone];
 				$rules["members.$key.relasyon_sa_punong_pamilya"] = ['required',new ValidRelasyonAge($key),new AllowedString,'max:100'];
 				$rules["members.$key.kasarian"] = ['required','max:1'];
 				$rules["members.$key.kapanganakan"] = ['required', new ValidBirthdate, 'after_or_equal:1850-01-01'];
@@ -122,11 +124,6 @@ class HouseholdHeadRequest extends FormRequest
             if(request()->has('age')){
                 if(request('age') < 12){
                     $validator->errors()->add("age", "Must be 12 years old and above.");
-                }
-            }
-            if(request()->has('ext_name')){
-                if(strlen(request('ext_name')) > 3){
-                    $validator->errors()->add("ext_name", "The ext name must not exceed 3 characters.");
                 }
             }
             if(request()->has('sac_number')){
