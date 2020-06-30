@@ -48,9 +48,6 @@ class HouseholdHeadController extends Controller
                 $query->orWhere('middle_name','like',"%$key%");
                 $query->orWhere('barcode_number','like',"%$key%");
                 $query->orWhere('last_name','like',"%$key%");
-                $query->orWhere('barangay_psgc','like',"%$key%");
-                $query->orWhere('province_psgc','like',"%$key%");
-                $query->orWhere('city_psgc','like',"%$key%");
             });
         }else{
             if($request->startDate){
@@ -66,6 +63,15 @@ class HouseholdHeadController extends Controller
             }
             // return [$start_date, $end_date];
             $household_heads->wherebetween('household_heads.created_at',[$start_date, $end_date]);
+        }
+        if(request()->has('province_psgc') && request('province_psgc') != ""){
+            $household_heads->where('province_psgc', request('province_psgc'));
+        }
+        if(request()->has('city_psgc') && request('city_psgc') != ""){
+            $household_heads->where('city_psgc', request('city_psgc'));
+        }
+        if(request()->has('barangay_psgc') && request('barangay_psgc') != ""){
+            $household_heads->where('barangay_psgc', request('barangay_psgc'));
         }
         if(request()->has('currentPage')){
             $per_page = 500;
