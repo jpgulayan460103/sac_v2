@@ -59,13 +59,19 @@ class HouseholdHeadRequest extends FormRequest
             'katutubo_name' => ['required_if:katutubo,Y', new AllowedString,'max:80'],
             'bene_others' => ['required', new RequiredIfNotEmpty('others_name'), new AllowedString,'max:80', new MustHaveAlpha],
             'others_name' => ['required_if:bene_others,Y', new DisallowDash, new AllowedString,'max:80'],
-            'petsa_ng_pagrehistro' => ['required', new ValidBirthdate, 'after_or_equal:2020-04-01', 'before_or_equal:2020-06-30'],
             'pangalan_ng_punong_barangay' => ['required', new DisallowDash, new AllowedStringName,'max:80', new MustHaveAlpha],
             'pangalan_ng_lswdo' => ['required', new AllowedStringName,'max:80', new MustHaveAlpha],
             'barcode_number' => ['required'],
             'sac_number' => ['required','numeric'],
             'sap_type' => ['required'],
         ];
+        if(request()->has("sap_type")){
+            if(strtolower(request("sap_type")) == "regular"){
+                $rules['petsa_ng_pagrehistro'] = ['required', new ValidBirthdate, 'after_or_equal:2020-04-01', 'before_or_equal:2020-06-30'];
+            }else{
+                $rules['petsa_ng_pagrehistro'] = ['required', new ValidBirthdate, 'after_or_equal:2020-04-01'];
+            }
+        }
 
         if(request()->has('members')){
 			$members = request('members');
@@ -91,8 +97,8 @@ class HouseholdHeadRequest extends FormRequest
     {
         $messages = [
             'barangay.required' => 'Please select Barangay',
-            'petsa_ng_pagrehistro.after_or_equal' => "Petsa ng Pagrerehistro' field month should be April, May or June 2020 only",
-            'petsa_ng_pagrehistro.before_or_equal' => "Petsa ng Pagrerehistro' field month should be April, May or June 2020 only",
+            // 'petsa_ng_pagrehistro.after_or_equal' => "Petsa ng Pagrerehistro' field month should be April, May or June 2020 only",
+            // 'petsa_ng_pagrehistro.before_or_equal' => "Petsa ng Pagrerehistro' field month should be April, May or June 2020 only",
             'barcode_number.unique' => "The :attribute is already added.",
         ];
 
