@@ -67,6 +67,9 @@ class HouseholdHeadController extends Controller
         if(request()->has('province_psgc') && request('province_psgc') != ""){
             $household_heads->where('province_psgc', request('province_psgc'));
         }
+        if(request()->has('sap_type') && request('sap_type') != ""){
+            $household_heads->where('sap_type', request('sap_type'));
+        }
         if(request()->has('city_psgc') && request('city_psgc') != ""){
             $household_heads->where('city_psgc', request('city_psgc'));
         }
