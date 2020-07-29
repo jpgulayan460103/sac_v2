@@ -191,7 +191,7 @@ class HouseholdHeadController extends Controller
         // $writer = new Xlsx($spreadsheet);
         // $writer->save("storage/$filename");
         // $url = \Storage::url("$filename");
-        $url = "storage/";
+        $url = "storage/$filename";
         return [
             'filename' => $filename,
             'path' => $url
