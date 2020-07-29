@@ -91,7 +91,7 @@ class HouseholdHeadController extends Controller
     {
         $filename = $request->filename;
         $to_export = $this->index($request);
-        $writer = Writer::createFromPath("files/exported/$filename", 'a+');
+        $writer = Writer::createFromPath("storage/$filename", 'a+');
         $for_export = [];
         $households =  $to_export['household_heads']['data'];
         $total_pages =  $to_export['household_heads']['meta']['pagination']['total_pages'];
@@ -184,12 +184,12 @@ class HouseholdHeadController extends Controller
 
         $datetime = Carbon::now();
         $filename = "sac-forms-".$datetime->toDateString()."-".$datetime->format('H-i-s').".csv";
-        $writer = Writer::createFromPath("files/exported/$filename", 'w+');
+        $writer = Writer::createFromPath("storage/$filename", 'w+');
         $writer->insertOne($headers);
         // $spreadsheet = new Spreadsheet();
         // $sheet = $spreadsheet->getActiveSheet()->fromArray($headers, NULL, 'A1');
         // $writer = new Xlsx($spreadsheet);
-        // $writer->save("files/exported/$filename");
+        // $writer->save("storage/$filename");
         $url = \Storage::url("$filename");
         return [
             'filename' => $filename,
